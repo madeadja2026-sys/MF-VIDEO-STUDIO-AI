@@ -1,0 +1,9 @@
+{
+  "name": "MF Video Studio AI",
+  "short_name": "MF Video Studio",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0c1020",
+  "theme_color": "#101322",
+  "description": "Studio video foto-ke-video lokal dan offline"
+}

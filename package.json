@@ -1,0 +1,38 @@
+{
+  "name": "mf-video-studio-ai",
+  "version": "1.0.0",
+  "description": "MF Video Studio AI - local-first photo video creator",
+  "main": "desktop/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "id.mf.video.studio",
+    "productName": "MF Video Studio AI",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "public/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "MF-Video-Studio-AI-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
