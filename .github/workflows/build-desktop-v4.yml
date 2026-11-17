@@ -1,0 +1,32 @@
+name: Build MF VIDEO STUDIO AI Windows Installer
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'desktop-v4/**'
+      - '.github/workflows/build-desktop-v4.yml'
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: desktop-v4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build desktop application and bundle FFmpeg
+        shell: cmd
+        run: BUILD_WINDOWS.bat
+      - name: Install Inno Setup
+        run: choco install innosetup --yes --no-progress
+      - name: Create installer
+        shell: cmd
+        run: iscc desktop-v4\installer\setup.iss
+        working-directory: .
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MF-VIDEO-STUDIO-AI-V4-WINDOWS-INSTALLER
+          path: desktop-v4/release/*.exe
