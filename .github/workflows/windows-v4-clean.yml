@@ -1,0 +1,41 @@
+name: MF VIDEO STUDIO AI V4 Clean Windows Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [windows-v4-clean]
+    paths:
+      - 'windows-v4/**'
+      - '.github/workflows/windows-v4-clean.yml'
+jobs:
+  build:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: windows-v4/requirements.txt
+      - name: Build standalone Windows application
+        shell: pwsh
+        run: ./windows-v4/build_windows.ps1
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - name: Build installer EXE
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force windows-v4/release | Out-Null
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows-v4/installer/setup.iss
+      - name: Verify installer exists
+        shell: pwsh
+        run: |
+          $installer = "windows-v4/release/MF_VIDEO_STUDIO_AI_SETUP_V4.exe"
+          if (!(Test-Path $installer)) { throw "Installer file missing." }
+          Get-Item $installer | Format-List Name,Length,LastWriteTime
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MF-VIDEO-STUDIO-AI-V4-WINDOWS-SETUP
+          path: windows-v4/release/MF_VIDEO_STUDIO_AI_SETUP_V4.exe
+          if-no-files-found: error
